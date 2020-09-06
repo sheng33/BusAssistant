@@ -28,6 +28,7 @@ import com.shengq.notificationmanager.ui.Adapter.AddPlanAdapter
 import com.shengq.notificationmanager.amap.OPISearch
 import com.shengq.notificationmanager.ui.dao.BUSlineSearchDao
 import com.shengq.notificationmanager.network.WBean
+import com.shengq.notificationmanager.ui.model.AddPlanModel
 import kotlinx.android.synthetic.main.addcarplan_activity.*
 import kotlinx.android.synthetic.main.toolbar_activity.*
 
@@ -40,7 +41,7 @@ class AddPlanActivity : AppCompatActivity(), RouteSearch.OnRouteSearchListener, 
     var startAddress: BusStationItem? = null
     var spinnerList:MutableList<BusStationItem> = mutableListOf()
     lateinit var adapter:AddPlanAdapter
-    lateinit var addPlanModel:AddPlanModel
+    lateinit var addPlanModel: AddPlanModel
     companion object {
         var car01 = WBean("1314路","黄泥头-吕蒙","06:00-22:00"
             ,1)
@@ -101,16 +102,13 @@ class AddPlanActivity : AppCompatActivity(), RouteSearch.OnRouteSearchListener, 
         setContentView(R.layout.addcarplan_activity)
         setSupportActionBar(default_toolbar)
         addPlanModel = ViewModelProvider(this).get(AddPlanModel::class.java)
-
         addPlanModel.list.observe(this, Observer {
             if (it.isNotEmpty()){
-
                 queryView.isVisible = false
                 busLinesRecyclerView.isVisible = true
                 adapter = AddPlanAdapter(it)
                 busLinesRecyclerView.adapter = adapter
                 adapter.notifyDataSetChanged()
-
                 toast("有数据")
             }else{
                 toast("无数据")

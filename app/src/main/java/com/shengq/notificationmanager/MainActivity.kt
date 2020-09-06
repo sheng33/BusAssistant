@@ -36,15 +36,11 @@ import com.xuexiang.xhttp2.XHttp
 import com.xuexiang.xhttp2.XHttpSDK
 import com.xuexiang.xupdate.XUpdate
 import com.xuexiang.xupdate.entity.UpdateError.ERROR.CHECK_NO_NEW_VERSION
-import com.xuexiang.xupdate.logs.ILogger
 import com.xuexiang.xupdate.utils.UpdateUtils
 import com.xuexiang.xutil.app.PathUtils
 import com.xuexiang.xutil.net.NetworkUtils
 import com.xuexiang.xutil.tip.ToastUtils
-import com.zhy.http.okhttp.OkHttpUtils
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.OkHttpClient
-import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity(),
@@ -162,7 +158,6 @@ class MainActivity : AppCompatActivity(),
             Log.d("定位",OPISearch.address)
             while (true){
                 if (OPISearch.address.isNotEmpty()){
-                    toast(OPISearch.address)
                     message.what = R.id.location_now
                     message.data.putString("address",OPISearch.address)
                     Log.d("定位",OPISearch.address)
@@ -172,14 +167,9 @@ class MainActivity : AppCompatActivity(),
                 }
             }
         }.start()
+
         initXHttp()
         initUpdate()
-//        XUpdate.newBuild(this)
-////            .updateUrl("http:/47.102.86.236/notification/update/checkVersion")
-//            .updateUrl("http://192.168.1.4:1111/update/checkVersion")
-//            .isGet(false)
-//            .update()
-
 
         val notificationLayout = RemoteViews("com.shengq.notificationmanager",R.layout.notificat)
         val notificationExpanded = RemoteViews("com.shengq.notificationmanager",R.layout.notificat)
