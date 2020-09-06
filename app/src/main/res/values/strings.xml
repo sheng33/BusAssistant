@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">公交助手</string>
+    <string name="channelMsg">删除成功</string>
+    <string name="Authority">缺少系统权限，无法服务</string>
+    <string name="service_api_key">service_api_key</string>
+    <string name="default_service_api">http://47.102.86.236/xupdate</string>
+</resources>

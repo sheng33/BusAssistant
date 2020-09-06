@@ -1,0 +1,17 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="scstyle" parent="Theme.AppCompat.Light">
+        <!--开启时的颜色-->
+        <item name="colorControlActivated">#00e6db</item>
+        <!--关闭时的颜色-->
+        <item name="colorSwitchThumbNormal">#383434</item>
+        <!--关闭时的轨迹颜色-->
+        <item name="android:colorForeground">#ecd502</item>
+    </style>
+</resources>
