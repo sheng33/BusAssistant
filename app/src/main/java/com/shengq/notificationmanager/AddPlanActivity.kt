@@ -107,11 +107,10 @@ class AddPlanActivity : AppCompatActivity(), RouteSearch.OnRouteSearchListener, 
             if (it.isNotEmpty()){
                 queryView.isVisible = false
                 busLinesRecyclerView.isVisible = true
-                adapter = AddPlanAdapter(it)
+                adapter = AddPlanAdapter(this,it)
+                adapter.startAddress = startAddress?.busStationName.toString()
+                adapter.endAddress = endAddress?.busStationName.toString()
                 busLinesRecyclerView.adapter = adapter
-                busLinesRecyclerView.setOnClickListener {its ->
-                    Log.d("点击",its.linesBusId.text.toString())
-                }
                 adapter.notifyDataSetChanged()
                 toast("有数据")
             }else{
@@ -195,7 +194,6 @@ class AddPlanActivity : AppCompatActivity(), RouteSearch.OnRouteSearchListener, 
                         Log.d("线路规划2", it.toString())
                     }
                     Log.d("线路规划", it.steps[0].busLines[0].busStations.toString())
-
                 }
             }
         }

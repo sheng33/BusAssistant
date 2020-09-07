@@ -56,7 +56,8 @@ class MainActivity : AppCompatActivity(),
         var location:String = "暂无定位"
     }
     val locationText =  R.id.location_now
-    private val mHandler: Handler = object : Handler() {
+    private val mHandler: Handler = @SuppressLint("HandlerLeak")
+    object : Handler() {
         override fun handleMessage(msg: Message) {
             when(msg.what){
                 locationText->{
@@ -244,15 +245,6 @@ class MainActivity : AppCompatActivity(),
                         .update()
                     true
                 }
-//                R.id.add_stroke ->{
-//                    Toast.makeText(this,"add_stroke",Toast.LENGTH_SHORT).show()
-//
-//                    true
-//                }
-//                R.id.add_location ->{
-//                    Toast.makeText(this,"add_location",Toast.LENGTH_SHORT).show()
-//                    true
-//                }
                 else -> false
             }
         }

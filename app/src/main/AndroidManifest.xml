@@ -42,6 +42,9 @@
         <activity android:name=".AddPlanActivity"
             android:windowSoftInputMode="adjustResize">
         </activity>
+        <activity android:name=".PlanActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
     </application>
 
 </manifest>
