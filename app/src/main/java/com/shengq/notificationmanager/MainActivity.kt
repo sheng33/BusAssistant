@@ -30,7 +30,7 @@ import com.shengq.notificationmanager.amap.OPISearch
 import com.shengq.notificationmanager.network.OKHttpUpdateHttpService
 import com.shengq.notificationmanager.network.XUpdateServiceParser
 import com.shengq.notificationmanager.network.utils.SettingSPUtils
-import com.shengq.notificationmanager.ui.Adapter.CarPlanAdapter
+import com.shengq.notificationmanager.ui.adapter.CarPlanAdapter
 import com.shengq.notificationmanager.ui.dao.CarPlan
 import com.xuexiang.xhttp2.XHttp
 import com.xuexiang.xhttp2.XHttpSDK
@@ -128,7 +128,6 @@ class MainActivity : AppCompatActivity(),
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         Log.d("权限",requestCode.toString())
     }
-
     @SuppressLint("RestrictedApi", "WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

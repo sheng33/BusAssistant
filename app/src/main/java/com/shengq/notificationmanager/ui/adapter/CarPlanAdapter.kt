@@ -1,4 +1,4 @@
-package com.shengq.notificationmanager.ui.Adapter
+package com.shengq.notificationmanager.ui.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
