@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.shengq.notificationmanager.network;
+package com.shengq.notificationmanager.logic.network;
 
-import com.shengq.notificationmanager.network.entity.AppVersionInfo;
-import com.shengq.notificationmanager.network.http.XHttpUpdateHttpService;
-import com.shengq.notificationmanager.network.utils.SettingSPUtils;
+import com.shengq.notificationmanager.logic.network.entity.AppVersionInfo;
+import com.shengq.notificationmanager.logic.network.http.XHttpUpdateHttpService;
+import com.shengq.notificationmanager.logic.network.utils.SettingSPUtils;
 import com.xuexiang.xhttp2.model.ApiResult;
 import com.xuexiang.xupdate.XUpdate;
 import com.xuexiang.xupdate.entity.CheckVersionResult;

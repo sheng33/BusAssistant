@@ -1,12 +1,11 @@
-package com.shengq.notificationmanager.ui.dao
+package com.shengq.notificationmanager.logic.dao
 
-import com.shengq.notificationmanager.ui.dao.ZSGJinfoDao.BUS_CMD
-import com.shengq.notificationmanager.ui.dao.ZSGJinfoDao.BUS_SIGN
-import com.shengq.notificationmanager.ui.dao.ZSGJinfoDao.LINE_CMD
-import com.shengq.notificationmanager.ui.dao.ZSGJinfoDao.LINE_SIGN
-import com.shengq.notificationmanager.ui.dao.ZSGJinfoDao.REALBUS_CMD
-import com.shengq.notificationmanager.ui.dao.ZSGJinfoDao.REALBUS_SIGN
-import java.sql.Date
+import com.shengq.notificationmanager.logic.dao.ZSGJinfoDao.BUS_CMD
+import com.shengq.notificationmanager.logic.dao.ZSGJinfoDao.BUS_SIGN
+import com.shengq.notificationmanager.logic.dao.ZSGJinfoDao.LINE_CMD
+import com.shengq.notificationmanager.logic.dao.ZSGJinfoDao.LINE_SIGN
+import com.shengq.notificationmanager.logic.dao.ZSGJinfoDao.REALBUS_CMD
+import com.shengq.notificationmanager.logic.dao.ZSGJinfoDao.REALBUS_SIGN
 import java.util.*
 
 data class BUSlineSearchDao(val CMD:String = LINE_CMD, var TIMESTAMP:String = Date().time.toString(),

@@ -1,4 +1,4 @@
-package com.shengq.notificationmanager.network.utils;
+package com.shengq.notificationmanager.logic.network.utils;
 
 import android.app.NotificationManager;
 import android.content.Context;

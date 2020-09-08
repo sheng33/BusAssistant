@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.shengq.notificationmanager.network.http;
+package com.shengq.notificationmanager.logic.network.http;
 
 import androidx.annotation.NonNull;
 

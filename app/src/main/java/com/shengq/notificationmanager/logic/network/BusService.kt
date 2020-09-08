@@ -1,10 +1,7 @@
-package com.shengq.notificationmanager.network
+package com.shengq.notificationmanager.logic.network
 
 import com.alibaba.fastjson.JSONObject
-import okhttp3.ResponseBody
-import retrofit2.Call
 import retrofit2.http.*
-import java.util.*
 
 interface BusService {
     @Headers("Host:wx.mygolbs.com","Connection: keep-alive"

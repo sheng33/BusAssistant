@@ -1,4 +1,4 @@
-package com.shengq.notificationmanager
+package com.shengq.notificationmanager.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -26,14 +26,15 @@ import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.recyclerview.widget.GridLayoutManager
 import com.alibaba.fastjson.JSONObject
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.JsonObject
+import com.shengq.notificationmanager.R
 import com.shengq.notificationmanager.R.id.notificat_carName1
-import com.shengq.notificationmanager.amap.OPISearch
-import com.shengq.notificationmanager.network.OKHttpUpdateHttpService
-import com.shengq.notificationmanager.network.XUpdateServiceParser
-import com.shengq.notificationmanager.network.utils.SettingSPUtils
+import com.shengq.notificationmanager.logic.amap.OPISearch
+import com.shengq.notificationmanager.logic.network.OKHttpUpdateHttpService
+import com.shengq.notificationmanager.logic.network.XUpdateServiceParser
+import com.shengq.notificationmanager.logic.network.utils.SettingSPUtils
 import com.shengq.notificationmanager.ui.adapter.CarPlanAdapter
-import com.shengq.notificationmanager.ui.dao.CarPlan
+import com.shengq.notificationmanager.logic.dao.CarPlan
+import com.shengq.notificationmanager.logic.toast
 import com.xuexiang.xhttp2.XHttp
 import com.xuexiang.xhttp2.XHttpSDK
 import com.xuexiang.xupdate.XUpdate
@@ -43,22 +44,17 @@ import com.xuexiang.xutil.app.PathUtils
 import com.xuexiang.xutil.net.NetworkUtils
 import com.xuexiang.xutil.tip.ToastUtils
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.add_plan_time_activity.*
-
 
 class MainActivity : AppCompatActivity(),
     PopupMenu.OnMenuItemClickListener, View.OnClickListener{
     companion object {
-        var car01 = CarPlan("1314路","松岗塘下涌综合场站","皇岗口岸"
-            ,"07:40","洪桥头","松岗人民医院","暂无车次",1)
-        var car02 = CarPlan("332路","观澜新田总站","蛇口邮轮中心"
-            ,"07:40","福楼村","大布新村","20站",2)
-        var car03 = CarPlan("856路","观澜新田总站","蛇口邮轮中心"
-            ,"07:40","福楼村","大布新村","20站",1)
+        //模板数据
+//        var car01 = CarPlan("1314路","松岗塘下涌综合场站","皇岗口岸"
+//            ,"07:40","洪桥头","松岗人民医院","暂无车次",1)
         var arrayTest = arrayListOf<CarPlan>()
         var location:String = "暂无定位"
     }
-    val locationText =  R.id.location_now
+    val locationText = R.id.location_now
     private val mHandler: Handler = @SuppressLint("HandlerLeak")
     object : Handler() {
         override fun handleMessage(msg: Message) {
@@ -140,20 +136,16 @@ class MainActivity : AppCompatActivity(),
         var data = intent.getStringExtra("data")
         if (data!=null){
             var json = JSONObject.parseObject(data)
-            var startAddress = json.getString("line").split("-").get(0)
-            var endAddress = json.getString("line").split("-").get(1)
-            var carplan = CarPlan(json.getString("busId"),startAddress,endAddress,json.getString("time")
-                ,"","","",json.getIntValue("direction"))
+            var startAddress = json.getString("line").split("-")[0]
+            var endAddress = json.getString("line").split("-")[1]
+            var carplan = CarPlan(
+                json.getString("busId"), startAddress, endAddress, json.getString("time")
+                , "", "", "", json.getIntValue("direction")
+            )
             Log.d("回调数据2",json.toString())
-
             arrayTest.add(carplan)
             intent.removeExtra("data")
-        }else{
-            arrayTest.add(car01)
-            arrayTest.add(car02)
-            arrayTest.add(car03)
         }
-
         val layoutManager = GridLayoutManager(this,1)
         recyclerView.layoutManager = layoutManager
         val adapter = CarPlanAdapter(arrayTest)
@@ -175,7 +167,8 @@ class MainActivity : AppCompatActivity(),
             Log.d("定位",OPISearch.address)
             while (true){
                 if (OPISearch.address.isNotEmpty()){
-                    message.what = R.id.location_now
+                    message.what =
+                        R.id.location_now
                     message.data.putString("address",OPISearch.address)
                     Log.d("定位",OPISearch.address)
                     mHandler.sendMessage(message)
@@ -188,8 +181,12 @@ class MainActivity : AppCompatActivity(),
         initXHttp()
         initUpdate()
 
-        val notificationLayout = RemoteViews("com.shengq.notificationmanager",R.layout.notificat)
-        val notificationExpanded = RemoteViews("com.shengq.notificationmanager",R.layout.notificat)
+        val notificationLayout = RemoteViews("com.shengq.notificationmanager",
+            R.layout.notificat
+        )
+        val notificationExpanded = RemoteViews("com.shengq.notificationmanager",
+            R.layout.notificat
+        )
         val manager = getSystemService(Context.NOTIFICATION_SERVICE)
                 as NotificationManager
         val channel = NotificationChannel("normal","距离站点提醒",
@@ -242,7 +239,8 @@ class MainActivity : AppCompatActivity(),
         if (item != null) {
             return when(item.itemId){
                 R.id.add_car ->{
-                    val intent = Intent(this,AddPlanActivity::class.java)
+                    val intent = Intent(this,
+                        AddPlanActivity::class.java)
                     startActivity(intent)
                     Toast.makeText(this,"add_car",Toast.LENGTH_SHORT).show()
                     true
@@ -278,7 +276,8 @@ class MainActivity : AppCompatActivity(),
             Log.d("定位",OPISearch.address)
             while (true){
                 if (OPISearch.address.isNotEmpty()){
-                    message.what = R.id.location_now
+                    message.what =
+                        R.id.location_now
                     message.data.putString("address",OPISearch.address)
                     Log.d("定位",OPISearch.address)
                     mHandler.sendMessage(message)

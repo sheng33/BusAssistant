@@ -1,4 +1,4 @@
-package com.shengq.notificationmanager.network
+package com.shengq.notificationmanager.logic.network
 
 import com.xuexiang.xupdate.proxy.IUpdateHttpService
 import com.xuexiang.xupdate.proxy.IUpdateHttpService.DownloadCallback

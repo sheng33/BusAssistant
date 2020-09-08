@@ -11,7 +11,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.shengq.notificationmanager.R
-import com.shengq.notificationmanager.ui.dao.CarPlan
+import com.shengq.notificationmanager.logic.dao.CarPlan
 
 class CarPlanAdapter(private val myDataset: ArrayList<CarPlan>) :
     RecyclerView.Adapter<CarPlanAdapter.MyViewHolder>(), View.OnClickListener {

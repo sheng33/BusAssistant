@@ -1,4 +1,4 @@
-package com.shengq.notificationmanager.network
+package com.shengq.notificationmanager.logic.network
 
 import com.google.gson.annotations.SerializedName
 data class BaseResp<T> (

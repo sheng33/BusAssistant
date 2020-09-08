@@ -1,4 +1,4 @@
-package com.shengq.notificationmanager.ui.dao
+package com.shengq.notificationmanager.logic.dao
 
 object ZSGJinfoDao {
     //开始地点到结束地点查询编码

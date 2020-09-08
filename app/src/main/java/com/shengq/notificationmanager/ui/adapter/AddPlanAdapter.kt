@@ -6,15 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemClickListener
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.alibaba.fastjson.JSONObject
-import com.shengq.notificationmanager.AddPlanActivity
-import com.shengq.notificationmanager.PlanActivity
+import com.shengq.notificationmanager.ui.PlanActivity
 import com.shengq.notificationmanager.R
-import com.shengq.notificationmanager.network.WBean
-import com.xuexiang.xutil.app.ActivityUtils.startActivity
+import com.shengq.notificationmanager.logic.network.WBean
 import java.lang.Exception
 
 

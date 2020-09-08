@@ -1,15 +1,15 @@
-package com.shengq.notificationmanager.ui.model
+package com.shengq.notificationmanager.logic.model
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alibaba.fastjson.JSONObject
-import com.shengq.notificationmanager.dataConvert
-import com.shengq.notificationmanager.ui.dao.BUSlineSearchDao
-import com.shengq.notificationmanager.network.BusService
-import com.shengq.notificationmanager.network.RetrofitFactory
-import com.shengq.notificationmanager.network.WBean
+import com.shengq.notificationmanager.logic.dao.BUSlineSearchDao
+import com.shengq.notificationmanager.logic.dataConvert
+import com.shengq.notificationmanager.logic.network.BusService
+import com.shengq.notificationmanager.logic.network.RetrofitFactory
+import com.shengq.notificationmanager.logic.network.WBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

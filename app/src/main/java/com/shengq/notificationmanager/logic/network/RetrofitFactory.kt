@@ -1,4 +1,4 @@
-package com.shengq.notificationmanager.network
+package com.shengq.notificationmanager.logic.network
 
 import android.util.Log
 import com.google.gson.Gson

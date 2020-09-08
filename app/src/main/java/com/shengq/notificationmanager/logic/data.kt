@@ -1,11 +1,11 @@
-package com.shengq.notificationmanager
+package com.shengq.notificationmanager.logic
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
-import com.shengq.notificationmanager.network.BaseResp
+import com.shengq.notificationmanager.logic.network.BaseResp
 
 fun <T> BaseResp<T>.dataConvert(): T {
     if (status == 1) {

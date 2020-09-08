@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.shengq.notificationmanager.network.entity;
+package com.shengq.notificationmanager.logic.network.entity;
 
 /**
  * XUpdateService返回的api

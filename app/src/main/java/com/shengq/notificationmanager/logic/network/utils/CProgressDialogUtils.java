@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.shengq.notificationmanager.network.utils;
+package com.shengq.notificationmanager.logic.network.utils;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

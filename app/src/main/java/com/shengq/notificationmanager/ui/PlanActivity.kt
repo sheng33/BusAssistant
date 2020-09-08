@@ -1,4 +1,4 @@
-package com.shengq.notificationmanager
+package com.shengq.notificationmanager.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,10 +8,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.alibaba.fastjson.JSONObject
-import com.shengq.notificationmanager.ui.dao.CarPlan
+import com.shengq.notificationmanager.R
 import kotlinx.android.synthetic.main.add_plan_time_activity.*
-import java.io.Serializable
-import java.sql.Date
 import java.util.*
 
 class PlanActivity: AppCompatActivity() {
@@ -53,7 +51,8 @@ class PlanActivity: AppCompatActivity() {
             var planStr = "{'busId':'${add_busId.text}','line':'${add_busLine.text}','time':'${timepicker.hour}:${timepicker.minute}','waitSite':'${add_waitSite.text}','direction':$direction}"
             var json = JSONObject.parseObject(planStr)
 
-            var intent = Intent(this,MainActivity::class.java)
+            var intent = Intent(this,
+                MainActivity::class.java)
             intent.putExtra("data",json.toString())
             startActivity(intent)
             Log.d("最后输出",json.toString())

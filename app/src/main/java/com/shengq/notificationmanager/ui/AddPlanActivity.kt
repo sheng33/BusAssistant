@@ -1,4 +1,4 @@
-package com.shengq.notificationmanager
+package com.shengq.notificationmanager.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -24,20 +24,23 @@ import com.amap.api.services.busline.BusStationQuery
 import com.amap.api.services.busline.BusStationResult
 import com.amap.api.services.busline.BusStationSearch
 import com.amap.api.services.route.*
-import com.shengq.notificationmanager.amap.OPISearch
-import com.shengq.notificationmanager.ui.dao.BUSlineSearchDao
-import com.shengq.notificationmanager.network.WBean
+import com.shengq.notificationmanager.R
+import com.shengq.notificationmanager.logic.amap.OPISearch
+import com.shengq.notificationmanager.logic.network.WBean
+import com.shengq.notificationmanager.logic.dao.BUSlineSearchDao
+import com.shengq.notificationmanager.logic.toast
 import com.shengq.notificationmanager.ui.adapter.AddPlanAdapter
-import com.shengq.notificationmanager.ui.model.AddPlanModel
+import com.shengq.notificationmanager.logic.model.AddPlanModel
 import kotlinx.android.synthetic.main.addcarplan_activity.*
-import kotlinx.android.synthetic.main.buslines_item.view.*
 import kotlinx.android.synthetic.main.toolbar_activity.*
 
 
 class AddPlanActivity : AppCompatActivity(), RouteSearch.OnRouteSearchListener, TextWatcher,
         BusStationSearch.OnBusStationSearchListener {
-    val editTextStart =  R.id.editTextTextPersonNameStart
-    val editTextEnd =  R.id.editTextTextPersonNameEnd
+    val editTextStart =
+        R.id.editTextTextPersonNameStart
+    val editTextEnd =
+        R.id.editTextTextPersonNameEnd
     var endAddress: BusStationItem? = null
     var startAddress: BusStationItem? = null
     var spinnerList:MutableList<BusStationItem> = mutableListOf()
@@ -84,7 +87,8 @@ class AddPlanActivity : AppCompatActivity(), RouteSearch.OnRouteSearchListener, 
     }
     private fun BusListQuery(){
         if (startAddress!=null&&endAddress!=null){
-            var data = BUSlineSearchDao()
+            var data =
+                BUSlineSearchDao()
             data.CITYNAME = OPISearch.city
             data.SIGN = "1472dec68a7d6a024a89bd8c2ba6d9e7"
             data.TIMESTAMP = "1598781018786"

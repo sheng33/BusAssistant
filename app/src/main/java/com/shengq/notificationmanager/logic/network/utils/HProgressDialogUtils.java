@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.shengq.notificationmanager.network.utils;
+package com.shengq.notificationmanager.logic.network.utils;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;

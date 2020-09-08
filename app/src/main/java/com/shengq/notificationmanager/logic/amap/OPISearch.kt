@@ -1,10 +1,7 @@
-package com.shengq.notificationmanager.amap
+package com.shengq.notificationmanager.logic.amap
 
 import android.content.Context
 import android.util.Log
-import android.view.View
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
@@ -14,9 +11,6 @@ import com.amap.api.services.core.PoiItem
 import com.amap.api.services.poisearch.PoiResult
 import com.amap.api.services.poisearch.PoiSearch
 import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener
-import com.shengq.notificationmanager.MainActivity
-import com.shengq.notificationmanager.R
-import kotlinx.android.synthetic.main.activity_main.*
 
 class OPISearch(private var context: Context) :  OnPoiSearchListener,AMapLocationListener {
     companion object{
@@ -39,11 +33,16 @@ class OPISearch(private var context: Context) :  OnPoiSearchListener,AMapLocatio
     }
 
     public fun getPoi() {
-        var poiServer = PoiSearch.Query("公交车站","150700",city)
+        var poiServer = PoiSearch.Query("公交车站","150700",
+            city
+        )
         poiServer.pageSize = 10
         var poiSearch = PoiSearch(context,poiServer)
         poiSearch.setOnPoiSearchListener(this)
-        var latLonPoint = LatLonPoint(latitude,longitude)
+        var latLonPoint = LatLonPoint(
+            latitude,
+            longitude
+        )
         var searchBound = PoiSearch.SearchBound(latLonPoint,1000)
         poiSearch.bound = searchBound
         poiSearch.searchPOIAsyn()
