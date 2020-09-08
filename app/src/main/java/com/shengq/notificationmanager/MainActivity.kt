@@ -24,7 +24,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.recyclerview.widget.GridLayoutManager
+import com.alibaba.fastjson.JSONObject
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.JsonObject
 import com.shengq.notificationmanager.R.id.notificat_carName1
 import com.shengq.notificationmanager.amap.OPISearch
 import com.shengq.notificationmanager.network.OKHttpUpdateHttpService
@@ -41,17 +43,18 @@ import com.xuexiang.xutil.app.PathUtils
 import com.xuexiang.xutil.net.NetworkUtils
 import com.xuexiang.xutil.tip.ToastUtils
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.add_plan_time_activity.*
 
 
 class MainActivity : AppCompatActivity(),
     PopupMenu.OnMenuItemClickListener, View.OnClickListener{
     companion object {
         var car01 = CarPlan("1314路","松岗塘下涌综合场站","皇岗口岸"
-            ,"07:40","洪桥头","松岗人民医院","暂无车次")
+            ,"07:40","洪桥头","松岗人民医院","暂无车次",1)
         var car02 = CarPlan("332路","观澜新田总站","蛇口邮轮中心"
-            ,"07:40","福楼村","大布新村","20站")
+            ,"07:40","福楼村","大布新村","20站",2)
         var car03 = CarPlan("856路","观澜新田总站","蛇口邮轮中心"
-            ,"07:40","福楼村","大布新村","20站")
+            ,"07:40","福楼村","大布新村","20站",1)
         var arrayTest = arrayListOf<CarPlan>()
         var location:String = "暂无定位"
     }
@@ -66,7 +69,7 @@ class MainActivity : AppCompatActivity(),
             }
         }
     }
-
+    //获取android权限
     private fun checkPublishPermission() {
         val permissions: MutableList<String> = mutableListOf()
         if (PackageManager.PERMISSION_GRANTED != ActivityCompat.checkSelfPermission(
@@ -134,9 +137,23 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        arrayTest.add(car01)
-        arrayTest.add(car02)
-        arrayTest.add(car03)
+        var data = intent.getStringExtra("data")
+        if (data!=null){
+            var json = JSONObject.parseObject(data)
+            var startAddress = json.getString("line").split("-").get(0)
+            var endAddress = json.getString("line").split("-").get(1)
+            var carplan = CarPlan(json.getString("busId"),startAddress,endAddress,json.getString("time")
+                ,"","","",json.getIntValue("direction"))
+            Log.d("回调数据2",json.toString())
+
+            arrayTest.add(carplan)
+            intent.removeExtra("data")
+        }else{
+            arrayTest.add(car01)
+            arrayTest.add(car02)
+            arrayTest.add(car03)
+        }
+
         val layoutManager = GridLayoutManager(this,1)
         recyclerView.layoutManager = layoutManager
         val adapter = CarPlanAdapter(arrayTest)

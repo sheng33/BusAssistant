@@ -65,6 +65,7 @@ class CarPlanAdapter(private val myDataset: ArrayList<CarPlan>) :
         holder.carNextsite.text = plan.nextSite
         holder.carLeftsitenumber.text = plan.leftSiteNumber
         var cardDelete:Button = holder.itemView.findViewById(R.id.card_delete)
+        this.position = position
         cardDelete.setOnClickListener {
             val mySnackbar = Snackbar.make(it,
                 R.string.channelMsg,6000)
