@@ -11,9 +11,15 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.shengq.notificationmanager.R
+import com.shengq.notificationmanager.logic.dao.AppDatabase
+import com.shengq.notificationmanager.logic.dao.BusPlan
+import com.shengq.notificationmanager.logic.dao.BusPlanDao
 import com.shengq.notificationmanager.logic.dao.CarPlan
 
-class CarPlanAdapter(private val myDataset: ArrayList<CarPlan>) :
+class CarPlanAdapter(
+    private val myDataset: ArrayList<CarPlan>,
+    val busPlanDao: BusPlanDao
+) :
     RecyclerView.Adapter<CarPlanAdapter.MyViewHolder>(), View.OnClickListener {
     lateinit var carPlan: CarPlan
     var position:Int = 0
@@ -36,6 +42,7 @@ class CarPlanAdapter(private val myDataset: ArrayList<CarPlan>) :
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): MyViewHolder {
+
         // create a new view
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.carplan_item, parent, false)
@@ -56,10 +63,11 @@ class CarPlanAdapter(private val myDataset: ArrayList<CarPlan>) :
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+
         val plan = myDataset[position]
         holder.carName.text = plan.name
-        holder.carStartaddress.text = plan.startAddress
-        holder.carEndaddress.text = plan.endAddress
+        holder.carStartaddress.text = plan.startSite
+        holder.carEndaddress.text = plan.endSite
         holder.carStarttime.text = plan.startTime
         holder.carNowsite.text = plan.nowSite
         holder.carNextsite.text = plan.nextSite
@@ -74,6 +82,8 @@ class CarPlanAdapter(private val myDataset: ArrayList<CarPlan>) :
             mySnackbar.setAction("撤销",this)
             mySnackbar.show()
             removeData(position)
+            var busPlan = BusPlan(carPlan.name,carPlan.startSite,carPlan.endSite,carPlan.startAddress,carPlan.startTime,carPlan.direction)
+            busPlanDao.deleteBusPlan(busPlan)
             Log.d("test","no")
         }
     }
@@ -98,6 +108,8 @@ class CarPlanAdapter(private val myDataset: ArrayList<CarPlan>) :
     //SnackbarListener
     override fun onClick(v: View?) {
         addData(position,carPlan)
+        var busPlan = BusPlan(carPlan.name,carPlan.startSite,carPlan.endSite,carPlan.startAddress,carPlan.startTime,carPlan.direction)
+        busPlanDao.insertBusPlan(busPlan)
         Log.d("test","撤销操作")
         notifyDataSetChanged()
     }

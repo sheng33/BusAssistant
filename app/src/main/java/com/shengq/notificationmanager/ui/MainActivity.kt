@@ -24,11 +24,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.recyclerview.widget.GridLayoutManager
-import com.alibaba.fastjson.JSONObject
 import com.google.android.material.snackbar.Snackbar
 import com.shengq.notificationmanager.R
 import com.shengq.notificationmanager.R.id.notificat_carName1
 import com.shengq.notificationmanager.logic.amap.OPISearch
+import com.shengq.notificationmanager.logic.dao.AppDatabase
+import com.shengq.notificationmanager.logic.dao.BusPlanDao
 import com.shengq.notificationmanager.logic.network.OKHttpUpdateHttpService
 import com.shengq.notificationmanager.logic.network.XUpdateServiceParser
 import com.shengq.notificationmanager.logic.network.utils.SettingSPUtils
@@ -44,6 +45,7 @@ import com.xuexiang.xutil.app.PathUtils
 import com.xuexiang.xutil.net.NetworkUtils
 import com.xuexiang.xutil.tip.ToastUtils
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(),
     PopupMenu.OnMenuItemClickListener, View.OnClickListener{
@@ -54,6 +56,8 @@ class MainActivity : AppCompatActivity(),
         var arrayTest = arrayListOf<CarPlan>()
         var location:String = "暂无定位"
     }
+    private lateinit var busPlanDao:BusPlanDao
+
     val locationText = R.id.location_now
     private val mHandler: Handler = @SuppressLint("HandlerLeak")
     object : Handler() {
@@ -119,7 +123,15 @@ class MainActivity : AppCompatActivity(),
             )
         }
     }
-
+    private fun loadDatabaseInit(){
+        thread {
+            var list = busPlanDao.loadAllBusPlan()
+            list.forEach {
+                var carPlan = CarPlan(it.busName,it.startSite,it.endSite,it.startAddress,it.time,"","","",it.direction)
+                arrayTest.add(carPlan)
+            }
+        }
+    }
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -133,22 +145,12 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        var data = intent.getStringExtra("data")
-        if (data!=null){
-            var json = JSONObject.parseObject(data)
-            var startAddress = json.getString("line").split("-")[0]
-            var endAddress = json.getString("line").split("-")[1]
-            var carplan = CarPlan(
-                json.getString("busId"), startAddress, endAddress, json.getString("time")
-                , "", "", "", json.getIntValue("direction")
-            )
-            Log.d("回调数据2",json.toString())
-            arrayTest.add(carplan)
-            intent.removeExtra("data")
-        }
+        busPlanDao = AppDatabase.getDatabase(applicationContext).BusPlanDao()
+        loadDatabaseInit()
+
         val layoutManager = GridLayoutManager(this,1)
         recyclerView.layoutManager = layoutManager
-        val adapter = CarPlanAdapter(arrayTest)
+        val adapter = CarPlanAdapter(arrayTest, busPlanDao)
         recyclerView.adapter = adapter
         var view = this.window.decorView
         if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == -1){

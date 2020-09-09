@@ -9,18 +9,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.alibaba.fastjson.JSONObject
 import com.shengq.notificationmanager.R
+import com.shengq.notificationmanager.logic.dao.AppDatabase
+import com.shengq.notificationmanager.logic.dao.BusPlan
+import com.shengq.notificationmanager.logic.dao.BusPlanDao
+import com.shengq.notificationmanager.logic.dao.CarPlan
 import kotlinx.android.synthetic.main.add_plan_time_activity.*
 import java.util.*
+import kotlin.concurrent.thread
 
 class PlanActivity: AppCompatActivity() {
     lateinit var busData:JSONObject
     lateinit var busPlanData:JSONObject
     private fun init(){
         var tempStr = intent.getStringExtra("busData")
-        Log.d("窗口打印",tempStr)
         busData = JSONObject.parseObject(tempStr)
         tempStr = intent.getStringExtra("busPlan")
-        Log.d("窗口打印",tempStr)
         busPlanData = JSONObject.parseObject(tempStr)
         var direction = busData.getIntValue("direction")
         add_busId.text = busData.getString("id")
@@ -53,8 +56,15 @@ class PlanActivity: AppCompatActivity() {
 
             var intent = Intent(this,
                 MainActivity::class.java)
-            intent.putExtra("data",json.toString())
             startActivity(intent)
+            var startAddress = json.getString("line").split("-")[0]
+            var endAddress = json.getString("line").split("-")[1]
+
+            val busPlanDao = AppDatabase.getDatabase(this).BusPlanDao()
+            var busPlan = BusPlan( json.getString("busId"),startAddress,endAddress,add_waitSite.text.toString(),json.getString("time"),json.getIntValue("direction"))
+            thread {
+                busPlanDao.insertBusPlan(busPlan)
+            }
             Log.d("最后输出",json.toString())
         }
 
