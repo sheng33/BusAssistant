@@ -13,8 +13,6 @@ class RetrofitFactory private constructor() {
 
 
     init {
-
-
         retrofit = Retrofit.Builder()
             .baseUrl("https://wx.mygolbs.com/WxBusServer/")
             .client(initOkhttpClient())

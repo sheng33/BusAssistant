@@ -12,5 +12,11 @@ interface BusService {
     @POST("ApiData.do")
     @FormUrlEncoded
     suspend fun startToEndAddressLinesInfo(@FieldMap  body: MutableMap<String,String>): BaseResp<List<JSONObject>>
+    @POST("ApiData.do")
+    @FormUrlEncoded
+    suspend fun busLineInfoSearch(@FieldMap  body: MutableMap<String,String>): BaseResp<List<JSONObject>>
+    @POST("ApiData.do")
+    @FormUrlEncoded
+    suspend fun busQueryInfoSearch(@FieldMap  body: MutableMap<String,String>): BaseResp<List<JSONObject>>
 
 }

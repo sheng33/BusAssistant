@@ -4,8 +4,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
@@ -25,8 +27,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.shengq.notificationmanager.ui.service.NetIntentService
 import com.shengq.notificationmanager.R
-import com.shengq.notificationmanager.R.id.notificat_carName1
 import com.shengq.notificationmanager.logic.amap.OPISearch
 import com.shengq.notificationmanager.logic.dao.AppDatabase
 import com.shengq.notificationmanager.logic.dao.BusPlanDao
@@ -53,9 +55,10 @@ class MainActivity : AppCompatActivity(),
         //模板数据
 //        var car01 = CarPlan("1314路","松岗塘下涌综合场站","皇岗口岸"
 //            ,"07:40","洪桥头","松岗人民医院","暂无车次",1)
-        var arrayTest = arrayListOf<CarPlan>()
-        var location:String = "暂无定位"
+
     }
+    var arrayTest = arrayListOf<CarPlan>()
+    var location:String = "暂无定位"
     private lateinit var busPlanDao:BusPlanDao
 
     val locationText = R.id.location_now
@@ -164,8 +167,7 @@ class MainActivity : AppCompatActivity(),
         location.startLocation()
         val message = Message()
         Log.d("定位",OPISearch.address)
-
-        Thread{
+        thread{
             Log.d("定位",OPISearch.address)
             while (true){
                 if (OPISearch.address.isNotEmpty()){
@@ -178,11 +180,13 @@ class MainActivity : AppCompatActivity(),
                     break
                 }
             }
-        }.start()
-
+        }
         initXHttp()
         initUpdate()
 
+        //启动公交信息更新服务
+
+        //通知栏功能代码
         val notificationLayout = RemoteViews("com.shengq.notificationmanager",
             R.layout.notificat
         )
@@ -192,7 +196,7 @@ class MainActivity : AppCompatActivity(),
         val manager = getSystemService(Context.NOTIFICATION_SERVICE)
                 as NotificationManager
         val channel = NotificationChannel("normal","距离站点提醒",
-                NotificationManager.IMPORTANCE_DEFAULT)
+            NotificationManager.IMPORTANCE_DEFAULT)
         manager.createNotificationChannel(channel)
         var notification  = NotificationCompat.Builder(this,"normal")
             .setContentTitle("公交助手")
@@ -208,13 +212,29 @@ class MainActivity : AppCompatActivity(),
         //自动开启通知
         manager.notify(1,notification.build())
 
-        updateNotice.setOnClickListener {
-            notificationLayout.setTextViewText(notificat_carName1,"888")
-            notification.bigContentView.setTextViewText(notificat_carName1,"666")
-            notification.bigContentView.setTextViewText(notificat_carName1,"777")
-            Toast.makeText(this,"8888",Toast.LENGTH_SHORT).show()
-            manager.notify(1,notification.build())
-        }
+
+//        updateNotice.setOnClickListener {
+//            notificationLayout.setTextViewText(notificat_carName1,"888")
+//            notification.bigContentView.setTextViewText(notificat_carName1,"666")
+//            notification.bigContentView.setTextViewText(notificat_carName1,"777")
+//            Toast.makeText(this,"8888",Toast.LENGTH_SHORT).show()
+//            manager.notify(1,notification.build())
+//        }
+    }
+
+    override fun onStart() {
+        NetIntentService.startActionBaz(this,arrayTest,"2")
+
+        //注册广告并通知服务更新车辆信息
+        var dataReceiver = MainReceiver()
+        var filter = IntentFilter();// 创建IntentFilter对象
+        filter.addAction("com.shengq.notificationmanager.ui.service");
+        registerReceiver(dataReceiver, filter);// 注册Broadcast Receiver
+        var myIntent =  Intent();//创建Intent对象
+        myIntent.action = "com.shengq.notificationmanager.ui.service";
+        myIntent.putExtra("cmd", "UPDATE_BUS");
+        sendBroadcast(myIntent)
+        super.onStart();
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar,menu)
@@ -317,6 +337,10 @@ class MainActivity : AppCompatActivity(),
         XHttpSDK.debug("XHttp") //需要调试的时候执行
         XHttp.getInstance().setTimeout(20000)
     }
+    inner class MainReceiver : BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
 
+        }
+    }
 
 }
