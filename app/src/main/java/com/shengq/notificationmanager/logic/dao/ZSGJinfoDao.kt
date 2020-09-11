@@ -10,11 +10,11 @@ object ZSGJinfoDao {
 
     const val LINE_SIGN = "1472dec68a7d6a024a89bd8c2ba6d9e7"
 
-    const val BUS_SIGN = "6ae33c0ba5a882bc90b08fe87278f8a7"
+    const val BUS_SIGN = "36e5f3d485b211e8f6894ca9d1005851"
 
     const val REALBUS_SIGN = "f40399dce136f9af97abc58c2d389aad"
 
-    const val BUS_SIGN_TIME = "1599721182676"
+    const val BUS_SIGN_TIME = "1599809396697"
     const val REALBUS_SIGN_TIME = "1599719362713"
 
 }

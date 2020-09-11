@@ -8,22 +8,25 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.shengq.notificationmanager.R
-import com.shengq.notificationmanager.logic.dao.AppDatabase
-import com.shengq.notificationmanager.logic.dao.BusPlan
-import com.shengq.notificationmanager.logic.dao.BusPlanDao
-import com.shengq.notificationmanager.logic.dao.CarPlan
+import com.shengq.notificationmanager.logic.amap.OPISearch
+import com.shengq.notificationmanager.logic.dao.*
+import com.shengq.notificationmanager.logic.model.MainModel
+import com.shengq.notificationmanager.ui.MainActivity
 
 class CarPlanAdapter(
     private val myDataset: ArrayList<CarPlan>,
-    val busPlanDao: BusPlanDao
+    val busPlanDao: BusPlanDao,
+    val mainModel: MainModel,
+    mainActivity: MainActivity
 ) :
     RecyclerView.Adapter<CarPlanAdapter.MyViewHolder>(), View.OnClickListener {
     lateinit var carPlan: CarPlan
     var position:Int = 0
-
+    var mainActivity = mainActivity
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder.
@@ -65,6 +68,22 @@ class CarPlanAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         val plan = myDataset[position]
+        var data = BUSInfoSearchDao("","","", OPISearch.city,plan.name,plan.direction.toString())
+        mainModel.getBusLines(data,plan.startAddress)
+        Log.d("等车站点",plan.startAddress)
+        mainModel.list.observe(mainActivity, Observer {
+            Log.d("测试123",it.toString())
+            plan.nowSite = it[0]
+            plan.nextSite = it[1]
+            plan.leftSiteNumber = it[2]
+            holder.carName.text = plan.name
+            holder.carStartaddress.text = plan.startSite
+            holder.carEndaddress.text = plan.endSite
+            holder.carStarttime.text = plan.startTime
+            holder.carNowsite.text = plan.nowSite
+            holder.carNextsite.text = plan.nextSite
+            holder.carLeftsitenumber.text = plan.leftSiteNumber
+        })
         holder.carName.text = plan.name
         holder.carStartaddress.text = plan.startSite
         holder.carEndaddress.text = plan.endSite
@@ -84,7 +103,6 @@ class CarPlanAdapter(
             removeData(position)
             var busPlan = BusPlan(carPlan.name,carPlan.startSite,carPlan.endSite,carPlan.startAddress,carPlan.startTime,carPlan.direction)
             busPlanDao.deleteBusPlan(busPlan)
-            Log.d("test","no")
         }
     }
 
@@ -110,7 +128,6 @@ class CarPlanAdapter(
         addData(position,carPlan)
         var busPlan = BusPlan(carPlan.name,carPlan.startSite,carPlan.endSite,carPlan.startAddress,carPlan.startTime,carPlan.direction)
         busPlanDao.insertBusPlan(busPlan)
-        Log.d("test","撤销操作")
         notifyDataSetChanged()
     }
 

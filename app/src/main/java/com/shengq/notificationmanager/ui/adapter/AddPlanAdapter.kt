@@ -50,7 +50,6 @@ class AddPlanAdapter(private val context: Context, private val myDataset: ArrayL
         holder.direction = plan.upperOrdown
         holder.itemView.setOnClickListener {
             val intent = Intent(context, PlanActivity::class.java)
-            Log.d("输出1",holder.linesBusId.text.toString())
             val busData = "{'id':'${holder.linesBusId.text}','route':'${holder.linesBusRoute.text}','time':'${holder.linesBusTime.text}','direction':${holder.direction}}"
             val busPlanData = "{'startAddress':'$startAddress','endAddress':'$endAddress'}"
             intent.putExtra("busData",busData)

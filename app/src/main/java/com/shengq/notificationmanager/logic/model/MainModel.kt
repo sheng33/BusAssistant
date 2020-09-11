@@ -22,13 +22,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainModel : ViewModel(){
-    private var list = MutableLiveData<ArrayList<String>>()
+    var list = MutableLiveData<ArrayList<String>>()
 
-    fun getBusLines(data: BUSInfoSearchDao){
+    fun getBusLines(data: BUSInfoSearchDao,waitAddress:String){
 
         var siteArray = arrayListOf<Int>()
         viewModelScope.launch {
+            Log.d("测试","查询开始,城市:${data.CITYNAME}")
             try {
+                var count:Int = 0;
                 //withContext表示挂起块  配合Retrofit声明的suspend函数执行 该块会挂起直到里面的网络请求完成 最后一行就是返回值
                 val busLineInfo = withContext(Dispatchers.IO){
                     var body = mutableMapOf<String,String>()
@@ -45,15 +47,12 @@ class MainModel : ViewModel(){
                 }
                 var bean = arrayListOf<String>()
                 busLineInfo.forEach { its ->
-                    var jsonArray = its.getJSONArray("data")
-                    if (jsonArray.isNotEmpty()){
-                        jsonArray.forEach {
-                            val json = JSONObject.parseObject(it.toString())
-                            bean.add(json.getString("stationName"))
-                        }
+                    val json = JSONObject.parseObject(its.toString())
+                    if (waitAddress.equals(json.getString("stationName"))){
+                        count = json.getIntValue("stationOrder")
                     }
+                    bean.add(json.getString("stationName"))
                 }
-
                 val busQuery = withContext(Dispatchers.IO){
                     var body = mutableMapOf<String,String>()
                     body.put("CMD",REALBUS_CMD);
@@ -66,37 +65,51 @@ class MainModel : ViewModel(){
 
                     RetrofitFactory.instance.getService(BusService::class.java).busQueryInfoSearch(body).dataConvert()
                 }
+
                 busQuery.forEach { its ->
-                    var jsonArray = its.getJSONArray("data")
-                    if (jsonArray.isNotEmpty()){
-                        jsonArray.forEach {
-                            val json = JSONObject.parseObject(it.toString())
-                            var index = json.getIntValue("index")
-                            var arrive = json.getIntValue("arrive")
-                            if (arrive == 1){
-                                siteArray.add(index)
-                            }else{
-                                siteArray.add(index-1)
-                            }
-                        }
+                    val json = JSONObject.parseObject(its.toString())
+                    var index = json.getIntValue("index")
+                    var arrive = json.getIntValue("arrive")
+                    if (arrive == 1){
+                        siteArray.add(index)
+                    }else{
+                        siteArray.add(index-1)
                     }
                 }
                 var siteList = arrayListOf<String>()
+                var min = 99
+                var site1 = ""
+                var site2 = ""
+
                 if (bean.isNotEmpty()&&siteArray.isNotEmpty()){
                     siteArray.forEach {
-                        siteList.add(bean[it])
-                        if (bean.size > (it+1)){
-                            siteList.add(bean[it+1])
-                        }else{
-                            siteList.add("null")
+                        var tempInt = count - bean.lastIndexOf(bean[it])
+                        if (min>tempInt){
+                            min = tempInt
+                            site1 = bean[it]
+                            site2 = if (bean.size > (it+1)){
+                                bean[it+1]
+                            }else{
+                                "null"
+                            }
                         }
+//                        Log.d("位置",bean.toString())
+//                        Log.d("位置一",bean.lastIndexOf(bean[it]).toString())
+//                        Log.d("位置二",count.toString())
                     }
+                }
+                siteList.add(site1)
+                siteList.add(site2)
+                if (min!=0){
+                    siteList.add("$min 站")
+                }else{
+                    siteList.add("已到站")
                 }
                 //给LiveData赋值  ui会自动更新
                 list.value = siteList
             }catch (e:Exception){
                 e.printStackTrace()
-                Log.e("net error","网络请求错误${e.toString()}")
+                Log.e("net error","网络请求错误")
             }
         }
     }

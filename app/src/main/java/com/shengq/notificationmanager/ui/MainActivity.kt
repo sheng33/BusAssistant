@@ -25,18 +25,17 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.shengq.notificationmanager.ui.service.NetIntentService
 import com.shengq.notificationmanager.R
 import com.shengq.notificationmanager.logic.amap.OPISearch
-import com.shengq.notificationmanager.logic.dao.AppDatabase
-import com.shengq.notificationmanager.logic.dao.BusPlanDao
+import com.shengq.notificationmanager.logic.dao.*
 import com.shengq.notificationmanager.logic.network.OKHttpUpdateHttpService
 import com.shengq.notificationmanager.logic.network.XUpdateServiceParser
 import com.shengq.notificationmanager.logic.network.utils.SettingSPUtils
 import com.shengq.notificationmanager.ui.adapter.CarPlanAdapter
-import com.shengq.notificationmanager.logic.dao.CarPlan
+import com.shengq.notificationmanager.logic.model.MainModel
 import com.shengq.notificationmanager.logic.toast
 import com.xuexiang.xhttp2.XHttp
 import com.xuexiang.xhttp2.XHttpSDK
@@ -57,9 +56,11 @@ class MainActivity : AppCompatActivity(),
 //            ,"07:40","洪桥头","松岗人民医院","暂无车次",1)
 
     }
+    lateinit var mainModel: MainModel
     var arrayTest = arrayListOf<CarPlan>()
     var location:String = "暂无定位"
     private lateinit var busPlanDao:BusPlanDao
+    lateinit var list: List<BusPlan>
 
     val locationText = R.id.location_now
     private val mHandler: Handler = @SuppressLint("HandlerLeak")
@@ -127,13 +128,13 @@ class MainActivity : AppCompatActivity(),
         }
     }
     private fun loadDatabaseInit(){
-        thread {
-            var list = busPlanDao.loadAllBusPlan()
-            list.forEach {
-                var carPlan = CarPlan(it.busName,it.startSite,it.endSite,it.startAddress,it.time,"","","",it.direction)
-                arrayTest.add(carPlan)
+            thread {
+                list = busPlanDao.loadAllBusPlan()
+                list.forEach {
+                    var carPlan = CarPlan(it.busName,it.startSite,it.endSite,it.startAddress,it.time,"","","",it.direction)
+                    arrayTest.add(carPlan)
+                }
             }
-        }
     }
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -151,9 +152,13 @@ class MainActivity : AppCompatActivity(),
         busPlanDao = AppDatabase.getDatabase(applicationContext).BusPlanDao()
         loadDatabaseInit()
 
+        val o = OPISearch(applicationContext).getLocation()
+        o.startLocation()
+        mainModel = ViewModelProvider(this).get(MainModel::class.java)
         val layoutManager = GridLayoutManager(this,1)
         recyclerView.layoutManager = layoutManager
-        val adapter = CarPlanAdapter(arrayTest, busPlanDao)
+        val adapter = CarPlanAdapter(arrayTest, busPlanDao,mainModel,this)
+
         recyclerView.adapter = adapter
         var view = this.window.decorView
         if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == -1){
@@ -162,9 +167,7 @@ class MainActivity : AppCompatActivity(),
             mySnackbar.setAction("确定",this)
             mySnackbar.show()
         }
-        var o = OPISearch(applicationContext)
-        var location = o.getLocation()
-        location.startLocation()
+
         val message = Message()
         Log.d("定位",OPISearch.address)
         thread{
@@ -176,7 +179,7 @@ class MainActivity : AppCompatActivity(),
                     message.data.putString("address",OPISearch.address)
                     Log.d("定位",OPISearch.address)
                     mHandler.sendMessage(message)
-                    location.stopLocation()
+                    OPISearch(applicationContext).getLocation().stopLocation()
                     break
                 }
             }
@@ -223,7 +226,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onStart() {
-        NetIntentService.startActionBaz(this,arrayTest,"2")
+//        NetIntentService.startActionBaz(this,arrayTest,"2")
 
         //注册广告并通知服务更新车辆信息
         var dataReceiver = MainReceiver()
