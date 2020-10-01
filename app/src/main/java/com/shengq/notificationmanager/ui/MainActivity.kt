@@ -151,11 +151,10 @@ class MainActivity : AppCompatActivity(),
         setSupportActionBar(toolbar)
         busPlanDao = AppDatabase.getDatabase(applicationContext).BusPlanDao()
         loadDatabaseInit()
-
         val o = OPISearch(applicationContext).getLocation()
         o.startLocation()
-
         mainModel = ViewModelProvider(this).get(MainModel::class.java)
+
         val layoutManager = GridLayoutManager(this,1)
         recyclerView.layoutManager = layoutManager
         val adapter = CarPlanAdapter(arrayTest, busPlanDao,mainModel,this)
@@ -224,8 +223,22 @@ class MainActivity : AppCompatActivity(),
 //            Toast.makeText(this,"8888",Toast.LENGTH_SHORT).show()
 //            manager.notify(1,notification.build())
 //        }
-    }
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary)
+        swipeRefresh.setOnRefreshListener {
+            refreshFruits(adapter)
+        }
 
+    }
+    private fun refreshFruits(adapter:CarPlanAdapter){
+        thread {
+            Thread.sleep(2000)
+            runOnUiThread {
+                adapter.notifyDataSetChanged()
+                swipeRefresh.isRefreshing = false
+            }
+        }
+
+    }
     override fun onStart() {
 //        NetIntentService.startActionBaz(this,arrayTest,"2")
 
