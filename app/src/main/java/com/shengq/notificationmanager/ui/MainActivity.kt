@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity(),
             thread {
                 list = busPlanDao.loadAllBusPlan()
                 list.forEach {
-                    var carPlan = CarPlan(it.busName,it.startSite,it.endSite,it.startAddress,it.time,"","","",it.direction)
+                    var carPlan = CarPlan(it.id,it.busName,it.startSite,it.endSite,it.startAddress,it.time,"","","",it.direction)
                     arrayTest.add(carPlan)
                 }
             }
@@ -154,11 +154,11 @@ class MainActivity : AppCompatActivity(),
 
         val o = OPISearch(applicationContext).getLocation()
         o.startLocation()
+
         mainModel = ViewModelProvider(this).get(MainModel::class.java)
         val layoutManager = GridLayoutManager(this,1)
         recyclerView.layoutManager = layoutManager
         val adapter = CarPlanAdapter(arrayTest, busPlanDao,mainModel,this)
-
         recyclerView.adapter = adapter
         var view = this.window.decorView
         if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == -1){
@@ -176,7 +176,8 @@ class MainActivity : AppCompatActivity(),
                 if (OPISearch.address.isNotEmpty()){
                     message.what =
                         R.id.location_now
-                    message.data.putString("address",OPISearch.address)
+//                    message.data.putString("address",OPISearch.address)
+                    message.data.putString("address","景德镇市")
                     Log.d("定位",OPISearch.address)
                     mHandler.sendMessage(message)
                     OPISearch(applicationContext).getLocation().stopLocation()

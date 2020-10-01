@@ -16,7 +16,9 @@ interface BusPlanDao {
     @Delete
     fun deleteBusPlan(dao:BusPlan)
 
-    @Query("delete from BusPlan where busName = :busName")
-    fun deleteUserByLastName(busName:String):Int
+
+
+    @Query("delete from BusPlan where id = :id")
+    fun deleteUserByLastId(id: Long):Int
 
 }

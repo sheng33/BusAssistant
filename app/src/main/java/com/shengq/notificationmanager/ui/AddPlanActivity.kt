@@ -89,7 +89,8 @@ class AddPlanActivity : AppCompatActivity(), RouteSearch.OnRouteSearchListener, 
         if (startAddress!=null&&endAddress!=null){
             var data =
                 BUSlineSearchDao()
-            data.CITYNAME = OPISearch.city
+//            data.CITYNAME = OPISearch.city
+            data.CITYNAME = "景德镇市"
             data.SIGN = "1472dec68a7d6a024a89bd8c2ba6d9e7"
             data.TIMESTAMP = "1598781018786"
             data.STARTPOINTNAME = startAddress!!.busStationName
@@ -177,7 +178,8 @@ class AddPlanActivity : AppCompatActivity(), RouteSearch.OnRouteSearchListener, 
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             //公交站点模糊搜索
-            var busStationQuery = BusStationQuery(s.toString(),OPISearch.city)
+//            var busStationQuery = BusStationQuery(s.toString(),OPISearch.city)
+            var busStationQuery = BusStationQuery(s.toString(),"景德镇市")
             var busStationSearch = BusStationSearch(applicationContext, busStationQuery)
             busStationSearch.setOnBusStationSearchListener(this) // 设置查询结果的监听
             busStationSearch.searchBusStationAsyn()

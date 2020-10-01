@@ -16,7 +16,8 @@ abstract class AppDatabase : RoomDatabase(){
                 return it
             }
             return Room.databaseBuilder(context
-                ,AppDatabase::class.java,"bus_database")
+                ,AppDatabase::class.java,"bus_database.db")
+                .allowMainThreadQueries()
                 .build().apply {
                     instance = this
                 }

@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.shengq.notificationmanager.R
-import com.shengq.notificationmanager.logic.amap.OPISearch
 import com.shengq.notificationmanager.logic.dao.*
 import com.shengq.notificationmanager.logic.model.MainModel
 import com.shengq.notificationmanager.ui.MainActivity
@@ -66,9 +65,12 @@ class CarPlanAdapter(
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
         val plan = myDataset[position]
-        var data = BUSInfoSearchDao("","","", OPISearch.city,plan.name,plan.direction.toString())
+//        var data = BUSInfoSearchDao("","","", OPISearch.city,plan.name,plan.direction.toString())
+        var data = BUSInfoSearchDao("","","", "景德镇市",plan.name,plan.direction.toString())
+        Log.d("等车站点",plan.startAddress)
+        if (plan.startAddress.lastIndexOf("(")!=-1)
+            plan.startAddress = plan.startAddress.substring(0,plan.startAddress.lastIndexOf("("))
         mainModel.getBusLines(data,plan.startAddress)
         Log.d("等车站点",plan.startAddress)
         mainModel.list.observe(mainActivity, Observer {
@@ -101,8 +103,7 @@ class CarPlanAdapter(
             mySnackbar.setAction("撤销",this)
             mySnackbar.show()
             removeData(position)
-            var busPlan = BusPlan(carPlan.name,carPlan.startSite,carPlan.endSite,carPlan.startAddress,carPlan.startTime,carPlan.direction)
-            busPlanDao.deleteBusPlan(busPlan)
+            busPlanDao.deleteUserByLastId(carPlan.id)
         }
     }
 

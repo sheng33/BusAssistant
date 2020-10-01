@@ -1,6 +1,7 @@
 package com.shengq.notificationmanager.logic.model
 
 import android.util.Log
+import androidx.core.content.contentValuesOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,6 +21,7 @@ import com.shengq.notificationmanager.logic.network.WBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.abs
 
 class MainModel : ViewModel(){
     var list = MutableLiveData<ArrayList<String>>()
@@ -52,6 +54,7 @@ class MainModel : ViewModel(){
                         count = json.getIntValue("stationOrder")
                     }
                     bean.add(json.getString("stationName"))
+                    Log.d("站点信息", json.getString("stationName")+":"+json.getIntValue("stationOrder"))
                 }
                 val busQuery = withContext(Dispatchers.IO){
                     var body = mutableMapOf<String,String>()
@@ -70,6 +73,7 @@ class MainModel : ViewModel(){
                     val json = JSONObject.parseObject(its.toString())
                     var index = json.getIntValue("index")
                     var arrive = json.getIntValue("arrive")
+
                     if (arrive == 1){
                         siteArray.add(index)
                     }else{
@@ -80,17 +84,21 @@ class MainModel : ViewModel(){
                 var min = 99
                 var site1 = ""
                 var site2 = ""
-
+                Log.d("剩余站点查询状态1",count.toString())
+                Log.d("剩余站点查询状态2",siteArray.size.toString())
                 if (bean.isNotEmpty()&&siteArray.isNotEmpty()){
                     siteArray.forEach {
-                        var tempInt = count - bean.lastIndexOf(bean[it])
-                        if (min>tempInt){
-                            min = tempInt
-                            site1 = bean[it]
-                            site2 = if (bean.size > (it+1)){
-                                bean[it+1]
-                            }else{
-                                "null"
+                        if (count>bean.lastIndexOf(bean[it])) {
+                            var tempInt = count - bean.lastIndexOf(bean[it])
+                            tempInt = abs(tempInt)
+                            if (min>tempInt){
+                                min = tempInt
+                                site1 = bean[it]
+                                site2 = if (bean.size > (it+1)){
+                                    bean[it+1]
+                                }else{
+                                    "null"
+                                }
                             }
                         }
 //                        Log.d("位置",bean.toString())
@@ -100,8 +108,11 @@ class MainModel : ViewModel(){
                 }
                 siteList.add(site1)
                 siteList.add(site2)
+                min--
                 if (min!=0){
                     siteList.add("$min 站")
+                }else if(min==99){
+                    siteList.add("网络错误")
                 }else{
                     siteList.add("已到站")
                 }
